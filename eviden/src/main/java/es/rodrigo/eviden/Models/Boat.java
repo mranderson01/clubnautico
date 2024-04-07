@@ -22,7 +22,7 @@ public class Boat {
     @Column(name = "nameenrollment")
     private String nameenrollment;
 
-    @Column(name = "nameenrollment")
+    @Column(name = "name")
     private String name;
 
     @Column(name = "numberberth")
