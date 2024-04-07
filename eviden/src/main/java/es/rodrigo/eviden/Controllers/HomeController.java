@@ -1,6 +1,9 @@
 package es.rodrigo.eviden.Controllers;
 
 
+import es.rodrigo.eviden.Interfaces.IHomeImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.ui.Model;
@@ -9,9 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HomeController {
-    @GetMapping("/")
-    public String Index(Authentication authentication, Model model){
 
-        return ResponseEntity<>
+    @Autowired
+    IHomeImpl iHomeImpl;
+    @GetMapping("/")
+    public ResponseEntity<String> index(Authentication authentication, Model model){
+
+        String informacion = iHomeImpl.obtenerMensaje();
+        return new ResponseEntity<>(informacion, HttpStatus.OK);
     }
 }
