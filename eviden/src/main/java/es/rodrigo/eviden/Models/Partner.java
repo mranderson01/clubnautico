@@ -19,6 +19,8 @@ public class Partner {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
+    @Column(name = "username")
+    private String username;
     @Column(name = "name")
     private String name;
     @Column(name = "surname")
