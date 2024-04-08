@@ -43,7 +43,7 @@ public class SecurityConfig {
                         //Departue
                         .requestMatchers(
                                 "/departue/**").hasAnyAuthority("ROLE_USER")
-                        .anyRequest().authenticated()
+                        .anyRequest().anonymous()
 
                 ) .exceptionHandling(exceptionHandling -> exceptionHandling
                         .accessDeniedHandler(accessDeniedHandler())

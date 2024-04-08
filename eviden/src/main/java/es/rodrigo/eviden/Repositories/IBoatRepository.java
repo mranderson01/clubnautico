@@ -4,11 +4,12 @@ import es.rodrigo.eviden.Models.Boat;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface IBoatRepository extends JpaRepository<Boat,Integer> {
-    Boat findByNumberberth(int Numberberth);
-    Boat findByName(String Name);
-    Boat findByNameEnrollment(String Nameenrollment);
-    Boat findByNumberberth(String Numberberth);
+    Optional<Boat> findByNumberberth(int Numberberth);
+    Optional<Boat> findByName(String Name);
+    Optional<Boat> findByNameenrollment(String Nameenrollment);
 
 }

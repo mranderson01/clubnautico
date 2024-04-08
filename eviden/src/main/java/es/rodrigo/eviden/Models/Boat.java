@@ -1,5 +1,7 @@
 package es.rodrigo.eviden.Models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -32,12 +34,15 @@ public class Boat {
     private int fee;
 
     //relaciones
+
     //barco - Propietario
     @ManyToMany(mappedBy = "boats")
+    @JsonIgnore
     private Set<Shipowner> shipowners = new HashSet<>();
 
 
     //BOAT - DEPARTURE
     @OneToMany(mappedBy = "boat")
+    @JsonIgnore
     private Set<Departure> departures = new HashSet<>();
 }

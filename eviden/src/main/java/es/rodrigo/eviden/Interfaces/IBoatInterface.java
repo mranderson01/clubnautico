@@ -1,13 +1,15 @@
 package es.rodrigo.eviden.Interfaces;
 
 import es.rodrigo.eviden.Models.Boat;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IBoatInterface {
-    List<Boat> getAll();
-    Boat findByName(String Name);
-    Boat findByNameenrollment(String Nameenrollment);
+    ResponseEntity<List<Boat>> getAll();
+    Optional<Boat> findByName(String Name);
+    Optional<Boat> findByNameenrollment(String Nameenrollment);
     Boat findbyNumberberth(int Numberberth);
 
     void createBoat(Boat boat);
