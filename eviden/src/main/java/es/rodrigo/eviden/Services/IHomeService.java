@@ -1,10 +1,10 @@
 package es.rodrigo.eviden.Services;
 
-import es.rodrigo.eviden.Interfaces.IHomeImpl;
+import es.rodrigo.eviden.Interfaces.IHomeInterface;
 import org.springframework.stereotype.Service;
 
 @Service
-public class IHomeService implements IHomeImpl {
+public class IHomeService implements IHomeInterface {
     @Override
     public String obtenerMensaje() {
 

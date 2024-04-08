@@ -4,7 +4,7 @@ import es.rodrigo.eviden.Models.Partner;
 
 import java.util.List;
 
-public interface IPartnerImpl {
+public interface IPartnerInterface {
     List<Partner> getAll();
     Partner getById(int id);
     void deletePartner(int id);

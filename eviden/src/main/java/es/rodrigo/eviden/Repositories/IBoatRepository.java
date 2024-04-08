@@ -7,4 +7,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface IBoatRepository extends JpaRepository<Boat,Integer> {
     Boat findByNumberberth(int Numberberth);
+    Boat findByName(String Name);
+    Boat findByNameEnrollment(String Nameenrollment);
+    Boat findByNumberberth(String Numberberth);
+
 }

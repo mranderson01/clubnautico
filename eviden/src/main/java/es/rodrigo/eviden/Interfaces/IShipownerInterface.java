@@ -4,7 +4,7 @@ import es.rodrigo.eviden.Models.Shipowner;
 
 import java.util.List;
 
-public interface IShipownerImpl {
+public interface IShipownerInterface {
     List<Shipowner> getAll();
     Shipowner getById(int id);
     void deleteShipowner(int id);
