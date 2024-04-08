@@ -84,11 +84,11 @@ public class DataInitializer implements CommandLineRunner {
             usuarioRepository.save(user);
         }
 
-        User usuario4=usuarioRepository.findByUsername("user@clubnautico.com");
+        User usuario4=usuarioRepository.findByUsername("neo@clubnautico.com");
         if (usuario4==null) {
             User user = new User();
-            user.setEmail("user@clubnautico.com");
-            user.setUsername("user@clubnautico.com");
+            user.setEmail("neo@clubnautico.com");
+            user.setUsername("neo@clubnautico.com");
             user.setPassword(new BCryptPasswordEncoder().encode("Asdf1324!"));
             user.getRoles().add(rolSocio);
             usuarioRepository.save(user);

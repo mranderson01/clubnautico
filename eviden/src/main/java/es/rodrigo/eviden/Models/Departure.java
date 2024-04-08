@@ -28,5 +28,10 @@ public class Departure {
     @Column(name = "destination")
     private  String destination;
 
+    //propiedades
 
+    //BOAT - DEPARTURE
+    @ManyToOne
+    @JoinColumn(name = "boat_id")
+    private Boat boat;
 }

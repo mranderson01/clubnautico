@@ -11,7 +11,24 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "shipowner")
-public class Shipowner extends Partner{
+public class Shipowner {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private int id;
+
+    @Column(name = "username")
+    private String username;
+
+    @Column(name = "name")
+    private String name;
+
+    @Column(name = "surname")
+    private String surname;
+
+    @Column(name = "country")
+    private String country;
 
     @Column(name = "dni")
     private String dni;

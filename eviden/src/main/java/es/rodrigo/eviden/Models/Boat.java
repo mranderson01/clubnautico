@@ -31,17 +31,13 @@ public class Boat {
     @Column(name = "fee")
     private int fee;
 
-
-
     //relaciones
-
-    //barco - socio
-    @ManyToOne
-    @JoinColumn(name = "partner_id")
-    private Partner partner;
-
     //barco - Propietario
     @ManyToMany(mappedBy = "boats")
     private Set<Shipowner> shipowners = new HashSet<>();
 
+
+    //BOAT - DEPARTURE
+    @OneToMany(mappedBy = "boat")
+    private Set<Departure> departures = new HashSet<>();
 }
