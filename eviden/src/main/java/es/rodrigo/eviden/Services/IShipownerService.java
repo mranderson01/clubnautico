@@ -25,6 +25,11 @@ public class IShipownerService implements IShipownerInterface {
     }
 
     @Override
+    public Shipowner getByUsername(String username) {
+        return iShipownerRepository.findByUsername(username);
+    }
+
+    @Override
     public void deleteShipowner(int id) {
         iShipownerRepository.deleteById(id);
     }

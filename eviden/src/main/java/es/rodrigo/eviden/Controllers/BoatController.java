@@ -2,12 +2,12 @@ package es.rodrigo.eviden.Controllers;
 
 import es.rodrigo.eviden.Interfaces.IBoatInterface;
 import es.rodrigo.eviden.Models.Boat;
+import es.rodrigo.eviden.Models.CreationBoatForm;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,8 +37,69 @@ public class BoatController {
         }
     }
 
-    @GetMapping("{id}")
-    ResponseEntity<Boat> getOneboat(@PathVariable int id){
-        ResponseEntity<Boat> getBoat = iBoatInterface.findbyNumberberth(id);
+    @GetMapping("/{id}")
+    ResponseEntity<?> getOneboat(@PathVariable int id){
+        ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(id);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body(responseEntity.getBody());
+        }
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return ResponseEntity.status(404).body("No se pudo encontrar el barco con ese numero de amarre.");
+        }
+        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<?> create( @Valid @RequestBody CreationBoatForm creationBoatForm,
+                              BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(400).body("El Barco que se inserto esta incorrecto. Vuelva a intentarlo.");
+        }
+
+        ResponseEntity<?> responseEntity = iBoatInterface.createBoat(creationBoatForm);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body(responseEntity.getBody());
+        }
+
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return ResponseEntity.status(404).body("No se pudo encontrar el barco con ese numero de amarre.");
+        }
+
+        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
+    }
+
+
+
+    @PutMapping("{id}")
+    ResponseEntity<?> updateBoat(@PathVariable int idNumberenrollment,
+                                 @Valid @RequestBody Boat boat,
+                                 BindingResult bindingResult){
+        if (bindingResult.hasErrors()){
+            return  ResponseEntity.status(400).body("El Barco que se inserto esta incorrecto. Vuelva a intentarlo.");
+        }
+
+        ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(idNumberenrollment);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body("Se actualizo correctamente el barco");
+        }
+        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
+
+    }
+
+    @DeleteMapping("{id}")
+    ResponseEntity<?> deleteBoat(@PathVariable int id){
+        ResponseEntity<?> responseEntity = iBoatInterface.deleteBoat(id);
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body("Se elimino correctamente el barco");
+        }
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return  ResponseEntity.status(404).body("Hubo un error en el id.");
+        }
+
+        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
+
     }
 }

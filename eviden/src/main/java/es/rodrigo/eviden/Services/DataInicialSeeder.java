@@ -12,10 +12,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.data.repository.util.ClassUtils.ifPresent;
 
 @Service
 public class DataInicialSeeder implements CommandLineRunner {
@@ -65,83 +68,87 @@ public class DataInicialSeeder implements CommandLineRunner {
         }
 
         //Botes
-        Boat boat1 = iBoatRepository.findByNumberberth(1);
-        if (boat1==null){
-            boat1 = new Boat();
-            boat1.setNameenrollment("Titanic");
-            boat1.setName("Titanic");
-            boat1.setNumberberth(1);
-            boat1.setFee(1500);
-            iBoatRepository.save(boat1);
-        }
 
-        Boat boat2 = iBoatRepository.findByNumberberth(2);
-        if (boat2==null){
-            boat2 = new Boat();
-            boat2.setNameenrollment("Neptune");
-            boat2.setName("Neptune");
-            boat2.setNumberberth(2);
-            boat2.setFee(1500);
-            iBoatRepository.save(boat2);
-        }
+        List<Boat> listBoat = new ArrayList<>();
+        Optional<Boat> boat1 = iBoatRepository.findByNumberberth(1);
+        if(boat1.isEmpty()){
+            Boat boat = new Boat();
+            boat.setNameenrollment("Titanic");
+            boat.setName("Titanic");
+            boat.setNumberberth(1);
+            boat.setFee(1500);
+            listBoat.add(boat);
+            iBoatRepository.save(boat);
+        };
 
-        Boat boat3 = iBoatRepository.findByNumberberth(3);
-        if (boat3 == null){
-            boat3 = new Boat();
-            boat3.setNameenrollment("Mars");
-            boat3.setName("Mars");
-            boat3.setNumberberth(3);
-            boat3.setFee(1500);
-            iBoatRepository.save(boat3);
-        }
+        Optional<Boat> boat2 = iBoatRepository.findByNumberberth(2);
+        if(boat2.isEmpty()){
+            Boat boat = new Boat();
+            boat.setNameenrollment("Neptune");
+            boat.setName("Neptune");
+            boat.setNumberberth(2);
+            boat.setFee(1500);
+            listBoat.add(boat);
+            iBoatRepository.save(boat);
+        };
+
+        Optional<Boat> boat3 = iBoatRepository.findByNumberberth(3);
+        if(boat3.isEmpty()){
+            Boat boat = new Boat();
+            boat.setNameenrollment("Mars");
+            boat.setName("Mars");
+            boat.setNumberberth(3);
+            boat.setFee(1500);
+            listBoat.add(boat);
+            iBoatRepository.save(boat);
+        };
 
         //Propietarios
-        List<Shipowner> listShipowner = new ArrayList<>();
 
-        Shipowner shipowner1 = iShipownerRepository.findByUsername("shipowner1@clubnautico.com");
-        if (shipowner1==null){
-            shipowner1 = new Shipowner();
-            shipowner1.setUsername("shipowner1@clubnautico.com");
-            shipowner1.setName("shipowner1Name");
-            shipowner1.setSurname("shipowner1Surname");
-            shipowner1.setCountry("shipowner1Country");
-            shipowner1.setDni("12345678X");
-            shipowner1.setPhone("123456789");
-            shipowner1.getBoats().add(boat1);
-            listShipowner.add(shipowner1);
+        Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner1@clubnautico.com"));
+        if (shipowner1.isEmpty()){
+            Shipowner shipowner = new Shipowner();
+            shipowner.setUsername("shipowner1@clubnautico.com");
+            shipowner.setName("shipowner1Name");
+            shipowner.setSurname("shipowner1Surname");
+            shipowner.setCountry("shipowner1Country");
+            shipowner.setDni("12345678X");
+            shipowner.setPhone("123456789");
+            shipowner.getBoats().add(listBoat.get(0));
+            iShipownerRepository.save(shipowner);
+
         }
 
-        Shipowner shipowner2 = iShipownerRepository.findByUsername("shipowner2@clubnautico.com");
-        if (shipowner2==null){
-            shipowner2 = new Shipowner();
-            shipowner2.setUsername("shipowner2@clubnautico.com");
-            shipowner2.setName("shipowner2Name");
-            shipowner2.setSurname("shipowner2Surname");
-            shipowner2.setCountry("shipowner2Country");
-            shipowner2.setDni("12345678Y");
-            shipowner2.setPhone("123456789");
-            shipowner2.getBoats().add(boat2);
-            listShipowner.add(shipowner2);
+        Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner2@clubnautico.com"));
+        if (shipowner2.isEmpty()){
+            Shipowner shipowner = new Shipowner();
+            shipowner.setUsername("shipowner2@clubnautico.com");
+            shipowner.setName("shipowner2Name");
+            shipowner.setSurname("shipowner2Surname");
+            shipowner.setCountry("shipowner2Country");
+            shipowner.setDni("12345678Y");
+            shipowner.setPhone("123456789");
+            shipowner.getBoats().add(listBoat.get(1));
+            iShipownerRepository.save(shipowner);
         }
 
-        Shipowner shipowner3 = iShipownerRepository.findByUsername("shipowner3@clubnautico.com");
-        if (shipowner3==null){
-            shipowner3 = new Shipowner();
-            shipowner3.setUsername("shipowner3@clubnautico.com");
-            shipowner3.setName("shipowner3Name");
-            shipowner3.setSurname("shipowner3Surname");
-            shipowner3.setCountry("shipowner3Country");
-            shipowner3.setDni("12345678Z");
-            shipowner3.setPhone("123456789");
-            shipowner3.getBoats().add(boat3);
-            listShipowner.add(shipowner3);
+        Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner3@clubnautico.com"));
+        if (shipowner3.isEmpty()){
+            Shipowner shipowner = new Shipowner();
+            shipowner.setUsername("shipowner3@clubnautico.com");
+            shipowner.setName("shipowner3Name");
+            shipowner.setSurname("shipowner3Surname");
+            shipowner.setCountry("shipowner3Country");
+            shipowner.setDni("12345678Z");
+            shipowner.setPhone("123456789");
+            shipowner.getBoats().add(listBoat.get(2));
+            iShipownerRepository.save(shipowner);
         }
-        iShipownerRepository.saveAll(listShipowner);
 
 
         //Salidas
         Optional<Departure> departure1 = iDepartureRepository.findById(1);
-        Boat finalBoat = boat1;
+        Boat finalBoat = listBoat.get(0);
         if (departure1.isEmpty()){
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
@@ -152,7 +159,7 @@ public class DataInicialSeeder implements CommandLineRunner {
         }
 
         Optional<Departure> departure2 = iDepartureRepository.findById(2);
-        Boat finalBoat2 = boat2;
+        Boat finalBoat2 = listBoat.get(1);
         if (departure2.isEmpty()){
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
@@ -164,7 +171,7 @@ public class DataInicialSeeder implements CommandLineRunner {
 
 
         Optional<Departure> departure3 = iDepartureRepository.findById(3);
-        Boat finalBoat3 = boat3;
+        Boat finalBoat3 = listBoat.get(2);
         if (departure3.isEmpty()){
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());

@@ -39,10 +39,6 @@ public class Shipowner {
 
     //relaciones
     //Propietario - barco
-    @ManyToMany
-    @JoinTable(
-            name = "shipowner_boat",
-            joinColumns = @JoinColumn(name = "shipowner_id"),
-            inverseJoinColumns = @JoinColumn(name = "boat_id"))
+    @ManyToMany(mappedBy = "shipowners", cascade = CascadeType.ALL)
     private Set<Boat> boats = new HashSet<>();
 }
