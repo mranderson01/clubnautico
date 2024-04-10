@@ -1,69 +1,39 @@
-package es.rodrigo.eviden.security.config;
+package es.rodrigo.eviden.security.Config;
 
-import es.rodrigo.eviden.security.Models.CustomAccessDeniedHandler;
-import es.rodrigo.eviden.security.Services.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import es.rodrigo.seguridad.security.Jwt.JwtAuthenticationFilter;
+
+import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Autowired
-    UserService userService;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final AuthenticationProvider authProvider;
 
     @Bean
-    public AccessDeniedHandler accessDeniedHandler() {
-        return new CustomAccessDeniedHandler();
-    }
-    @Bean
-    SecurityFilterChain web(HttpSecurity http) throws Exception {
-
-        http
-                .authorizeHttpRequests((authorize) -> authorize
-                        //AUTH--
-                        .requestMatchers("/auth/login","/auth/registration","/").permitAll()
-
-                        //full
-                        .requestMatchers("/home").hasAnyAuthority("ROLE_SOCIO")
-                        .requestMatchers("/departure/**").hasAnyAuthority("ROLE_MANAGER")
-                        .requestMatchers("/boat/**","/departure/**","/partner/**").hasAnyAuthority("ROLE_OWNER")
-                        .requestMatchers("/users/**").hasAnyAuthority("ROLE_ADMIN")
-
-                        //boat
-                        .requestMatchers(
-                                "/boat/**").hasAnyAuthority("ROLE_USER")
-                        //Departue
-                        .requestMatchers(
-                                "/departue/**").hasAnyAuthority("ROLE_USER")
-                        .anyRequest().anonymous()
-
-                ) .exceptionHandling(exceptionHandling -> exceptionHandling
-                        .accessDeniedHandler(accessDeniedHandler())
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception
+    {
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authRequest -> authRequest
+                                .requestMatchers("/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
+                                .anyRequest().authenticated()
                 )
-                .formLogin(form -> form
-                        .loginPage("/auth/login")
-                        .loginProcessingUrl("/login")
-                        .defaultSuccessUrl("/").permitAll()
-                ).logout(form -> form
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")
-                        .invalidateHttpSession(true) // Invalidar la sesión HTTP
-                        .deleteCookies("JSESSIONID") // Eliminar cookies, si las hay
-                        .permitAll()
-                ).userDetailsService(userService)
-                .csrf(crf -> crf.disable());
-        return http.build();
+                .sessionManagement(sessionManager-> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authenticationProvider(authProvider)
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    };
-};
+}
