@@ -12,10 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @Transactional
@@ -73,7 +70,7 @@ public class IBoatServiceImpl implements IBoatInterface {
         if (boat.isEmpty()){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
-        return ResponseEntity.status(HttpStatus.OK).body(boat);
+        return ResponseEntity.status(HttpStatus.OK).body(boat.get());
     }
 
     @Override
@@ -114,27 +111,39 @@ public class IBoatServiceImpl implements IBoatInterface {
 
 
     @Override
-    public ResponseEntity<?> deleteBoat(int id) {
+    public ResponseEntity<?> deleteBoatByName(String Name) {
 
+        iBoatRepository.deleteByName(Name);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity<?> deleteById(int id) {
         iBoatRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @Override
-    public ResponseEntity<?> updateBoat(int id,Boat boatInserted) {
+    public ResponseEntity<?> updateBoat(int id,CreationBoatForm boatInserted,Boat boat) {
 
-        Optional<Boat> boat = iBoatRepository.findById(id);
+        boat.setName(boatInserted.getName());
+        boat.setNameenrollment(boatInserted.getNameenrollment());
+        boat.setNumberberth(boatInserted.getNumberberth());
+        boat.setFee(boatInserted.getFee());
 
-        if (boat.isPresent()){
-            boat.get().setName(boatInserted.getName());
-            boat.get().setName(boatInserted.getName());
-            boat.get().setName(boatInserted.getName());
-            boat.get().setName(boatInserted.getName());
+        //añadir los propietarios de ese barco.
+        Set<Shipowner> listShipowner = new HashSet<>();
+        List<String> usernamesList = Arrays.asList(boatInserted.getUsernames());
 
-            iBoatRepository.save(boat.get());
-            return ResponseEntity.status(HttpStatus.OK).build();
+        if (!usernamesList.isEmpty()){
+            usernamesList.forEach(username -> {
+                listShipowner.add(iShipownerRepository.findByUsername(username));
+            });
         }
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        boat.setShipowners(listShipowner);
+
+        iBoatRepository.save(boat);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 }

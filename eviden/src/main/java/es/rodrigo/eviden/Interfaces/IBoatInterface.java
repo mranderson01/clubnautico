@@ -15,7 +15,8 @@ public interface IBoatInterface {
     ResponseEntity<?> findbyNumberberth(int Numberberth);
 
     ResponseEntity<?> createBoat(CreationBoatForm boat);
-    ResponseEntity<?> deleteBoat(int id);
+    ResponseEntity<?> deleteBoatByName(String Name);
+    ResponseEntity<?> deleteById(int id);
 
-    ResponseEntity<?> updateBoat(int id,Boat boat);
+    ResponseEntity<?> updateBoat(int id,CreationBoatForm boatInserted,Boat boat);
 }

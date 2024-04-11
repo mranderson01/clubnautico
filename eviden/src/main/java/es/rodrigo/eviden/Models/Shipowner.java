@@ -41,11 +41,9 @@ public class Shipowner {
     //relaciones
     //Propietario - barco
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "shipowner_boat",
             joinColumns = @JoinColumn(name = "shipowner_id"),
             inverseJoinColumns = @JoinColumn(name = "boat_id"))
     private Set<Boat> boats = new HashSet<>();
-
-
 }

@@ -72,34 +72,40 @@ public class BoatController {
 
 
 
-    @PutMapping("{id}")
-    ResponseEntity<?> updateBoat(@PathVariable int idNumberenrollment,
-                                 @Valid @RequestBody Boat boat,
+    @PutMapping("/{id}")
+    ResponseEntity<?> updateBoat(@PathVariable int id,
+                                 @Valid @RequestBody  CreationBoatForm boat,
                                  BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             return  ResponseEntity.status(400).body("El Barco que se inserto esta incorrecto. Vuelva a intentarlo.");
         }
 
-        ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(idNumberenrollment);
+        ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(id);
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return  ResponseEntity.status(404).body("No se encuentra el barco segun el numero de amarre.");
+        }
 
         if (responseEntity.getStatusCode().is2xxSuccessful()){
+            iBoatInterface.updateBoat(id,boat, (Boat) responseEntity.getBody());
             return  ResponseEntity.status(200).body("Se actualizo correctamente el barco");
         }
-        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
 
+        return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
     }
 
     @DeleteMapping("{id}")
     ResponseEntity<?> deleteBoat(@PathVariable int id){
-        ResponseEntity<?> responseEntity = iBoatInterface.deleteBoat(id);
+
+        ResponseEntity<?> responseEntity = iBoatInterface.deleteById(id);
+
         if (responseEntity.getStatusCode().is2xxSuccessful()){
             return  ResponseEntity.status(200).body("Se elimino correctamente el barco");
         }
+
         if (responseEntity.getStatusCode().is4xxClientError()){
             return  ResponseEntity.status(404).body("Hubo un error en el id.");
         }
 
         return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
-
     }
 }

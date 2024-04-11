@@ -32,7 +32,7 @@ public class Departure {
     //propiedades
 
     //BOAT - DEPARTURE
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "boat_id")
     private Boat boat;
 }

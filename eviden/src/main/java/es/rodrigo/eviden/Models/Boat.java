@@ -23,12 +23,12 @@ public class Boat {
     private int id;
 
     @NotNull
-    @Column(name = "nameenrollment")
-    private String nameenrollment;
-
-    @NotNull
     @Column(name = "name")
     private String name;
+
+    @NotNull
+    @Column(name = "nameenrollment")
+    private String nameenrollment;
 
     @NotNull
     @Column(name = "numberberth")
@@ -40,13 +40,13 @@ public class Boat {
 
     //relaciones
     //barco - Propietario
-    @ManyToMany(mappedBy = "boats")
+    @ManyToMany(mappedBy = "boats", cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Shipowner> Shipowners = new HashSet<>();
 
 
     //BOAT - DEPARTURE
-    @OneToMany(mappedBy = "boat")
+    @OneToMany(mappedBy = "boat",cascade = CascadeType.ALL)
     @JsonIgnore
     private Set<Departure> departures = new HashSet<>();
 }

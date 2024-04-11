@@ -13,5 +13,7 @@ public interface IBoatRepository extends JpaRepository<Boat,Integer> {
     Optional<Boat> findByNumberberth(int Numberberth);
     Optional<Boat> findByName(String Name);
     Optional<Boat> findByNameenrollment(String Nameenrollment);
+    void deleteByName(String Name);
+    void deleteById(int id);
 
 }
