@@ -4,7 +4,6 @@ import es.rodrigo.eviden.Interfaces.IBoatInterface;
 import es.rodrigo.eviden.Models.Boat;
 import es.rodrigo.eviden.Models.CreationBoatForm;
 import es.rodrigo.eviden.Models.Shipowner;
-import es.rodrigo.eviden.Models.Shipownerboat;
 import es.rodrigo.eviden.Repositories.IBoatRepository;
 import es.rodrigo.eviden.Repositories.IShipownerRepository;
 import jakarta.transaction.Transactional;
@@ -99,9 +98,9 @@ public class IBoatServiceImpl implements IBoatInterface {
             }
 
             //guardar en tabla intermedia
-            Shipownerboat shipownerboat = new Shipownerboat();
+            /*Shipownerboat shipownerboat = new Shipownerboat();
             shipownerboat.setBoat_id(boat.getId());
-            shipownerboat.setShipowner_id(shipownerOpt.get().getId());
+            shipownerboat.setShipowner_id(shipownerOpt.get().getId());*/
 
             //añadir el propietario en la lista de propietarios
             shipownerOpt.ifPresent(owners::add);

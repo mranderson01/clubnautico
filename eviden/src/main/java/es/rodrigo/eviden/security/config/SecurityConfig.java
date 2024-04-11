@@ -1,5 +1,6 @@
 package es.rodrigo.eviden.security.Config;
 
+import es.rodrigo.eviden.security.Jwt.JwtAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,7 +11,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import es.rodrigo.seguridad.security.Jwt.JwtAuthenticationFilter;
+
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,7 +30,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authRequest -> authRequest
                                 .requestMatchers("/auth/**", "/api-docs/**", "/swagger-ui/**").permitAll()
-                                .anyRequest().authenticated()
+                                .anyRequest().anonymous()
                 )
                 .sessionManagement(sessionManager-> sessionManager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authProvider)

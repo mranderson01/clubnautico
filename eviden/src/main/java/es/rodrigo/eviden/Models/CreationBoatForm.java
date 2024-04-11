@@ -1,6 +1,5 @@
 package es.rodrigo.eviden.Models;
 
-import jakarta.persistence.Column;
 import lombok.Data;
 import lombok.Getter;
 import lombok.NonNull;
@@ -17,10 +16,8 @@ public class CreationBoatForm {
     @NonNull
     private String name;
 
-    @NonNull
     private int numberberth;
 
-    @NonNull
     private int fee;
 
     @NonNull

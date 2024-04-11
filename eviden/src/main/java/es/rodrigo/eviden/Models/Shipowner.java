@@ -1,6 +1,7 @@
 package es.rodrigo.eviden.Models;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,12 @@ public class Shipowner {
 
     //relaciones
     //Propietario - barco
-    @ManyToMany(mappedBy = "shipowners", cascade = CascadeType.ALL)
+
+    @ManyToMany
+    @JoinTable(name = "shipowner_boat",
+            joinColumns = @JoinColumn(name = "shipowner_id"),
+            inverseJoinColumns = @JoinColumn(name = "boat_id"))
     private Set<Boat> boats = new HashSet<>();
+
+
 }

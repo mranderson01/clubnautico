@@ -148,8 +148,9 @@ public class DataInicialSeeder implements CommandLineRunner {
 
         //Salidas
         Optional<Departure> departure1 = iDepartureRepository.findById(1);
-        Boat finalBoat = listBoat.get(0);
+
         if (departure1.isEmpty()){
+            Boat finalBoat = listBoat.get(0);
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
             newDeparture.setTime("31/01/2024");
@@ -159,8 +160,9 @@ public class DataInicialSeeder implements CommandLineRunner {
         }
 
         Optional<Departure> departure2 = iDepartureRepository.findById(2);
-        Boat finalBoat2 = listBoat.get(1);
+
         if (departure2.isEmpty()){
+            Boat finalBoat2 = listBoat.get(1);
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
             newDeparture.setTime("31/01/2024");
@@ -171,8 +173,9 @@ public class DataInicialSeeder implements CommandLineRunner {
 
 
         Optional<Departure> departure3 = iDepartureRepository.findById(3);
-        Boat finalBoat3 = listBoat.get(2);
+
         if (departure3.isEmpty()){
+            Boat finalBoat3 = listBoat.get(2);
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
             newDeparture.setTime("31/01/2024");

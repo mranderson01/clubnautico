@@ -40,7 +40,7 @@ public class Boat {
 
     //relaciones
     //barco - Propietario
-    @ManyToMany(mappedBy = "boats", cascade = CascadeType.ALL)
+    @ManyToMany(mappedBy = "boats")
     @JsonIgnore
     private Set<Shipowner> Shipowners = new HashSet<>();
 
