@@ -41,6 +41,7 @@ public class Shipowner {
     //relaciones
     //Propietario - barco
 
+
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "shipowner_boat",
             joinColumns = @JoinColumn(name = "shipowner_id"),

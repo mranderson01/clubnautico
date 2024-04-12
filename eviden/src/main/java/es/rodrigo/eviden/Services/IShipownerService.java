@@ -30,7 +30,7 @@ public class IShipownerService implements IShipownerInterface {
     @Override
     public ResponseEntity<Shipowner> getByGetReferenceId(int id) {
         Shipowner shipowner = iShipownerRepository.getReferenceById(id);
-        if (shipowner!=null){
+        if (shipowner==null){
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(shipowner);
@@ -46,6 +46,15 @@ public class IShipownerService implements IShipownerInterface {
     }
 
     @Override
+    public ResponseEntity<Shipowner> getByDni(String Dni) {
+        Shipowner shipowner = iShipownerRepository.findByDni(Dni);
+        if (shipowner!=null){
+            return ResponseEntity.ok(shipowner);
+        }
+        return ResponseEntity.notFound().build();
+    }
+
+    @Override
     public ResponseEntity<?> deleteShipowner(int id) {
         iShipownerRepository.deleteById(id);
         return ResponseEntity.ok().build();
@@ -55,17 +64,15 @@ public class IShipownerService implements IShipownerInterface {
     public ResponseEntity<Shipowner> createShipowner(ShipownerForm shipownerForm) {
 
         Shipowner shipowner = new Shipowner();
-        shipowner.setUsername(shipowner.getUsername());
-        shipowner.setName(shipowner.getName());
-        shipowner.setSurname(shipowner.getName());
-        shipowner.setCountry(shipowner.getCountry());
-        shipowner.setDni(shipowner.getDni());
-        shipowner.setPhone(shipowner.getPhone());
+        shipowner.setUsername(shipownerForm.getUsername());
+        shipowner.setName(shipownerForm.getName());
+        shipowner.setSurname(shipownerForm.getName());
+        shipowner.setCountry(shipownerForm.getCountry());
+        shipowner.setDni(shipownerForm.getDni());
+        shipowner.setPhone(shipownerForm.getPhone());
 
         iShipownerRepository.save(shipowner);
 
         return ResponseEntity.ok().build();
     }
-
-
 }

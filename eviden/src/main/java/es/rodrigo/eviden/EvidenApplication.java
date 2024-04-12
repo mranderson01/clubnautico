@@ -9,5 +9,4 @@ public class EvidenApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(EvidenApplication.class, args);
 	}
-
 }

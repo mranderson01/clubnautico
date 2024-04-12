@@ -4,6 +4,7 @@ import es.rodrigo.eviden.Interfaces.IShipownerInterface;
 import es.rodrigo.eviden.Models.Shipowner;
 import es.rodrigo.eviden.Models.ShipownerForm;
 import jakarta.validation.Valid;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -23,7 +24,7 @@ public class ShipownerController {
          ResponseEntity<List<Shipowner>> responseEntity = iShipownerInterface.getAll();
 
          if (responseEntity.getStatusCode().is2xxSuccessful()){
-             return ResponseEntity.ok(responseEntity.getBody());
+             return ResponseEntity.status(200).body(responseEntity.getBody());
          }
 
         if (responseEntity.getStatusCode().is4xxClientError()){
@@ -33,16 +34,16 @@ public class ShipownerController {
         return ResponseEntity.status(500).body("error en el servidor.");
     }
 
-    @GetMapping("/{id}")
-    ResponseEntity<?> getOne(@PathVariable int id){
-        ResponseEntity<Shipowner> responseEntity = iShipownerInterface.getByGetReferenceId(id);
+    @GetMapping("/{dni}")
+    ResponseEntity<?> getOne(@PathVariable String dni){
+        ResponseEntity<Shipowner> responseEntity = iShipownerInterface.getByDni(dni);
 
         if (responseEntity.getStatusCode().is2xxSuccessful()){
-            return ResponseEntity.ok(responseEntity.getBody());
+            return ResponseEntity.status(200).body(responseEntity.getBody());
         }
 
         if (responseEntity.getStatusCode().is4xxClientError()){
-            return ResponseEntity.status(404).body("No se pudo encontrar la lista de propietarios");
+            return ResponseEntity.status(404).body("No se pudo encontrar el propietario");
         }
 
         return ResponseEntity.status(500).body("error en el servidor.");
@@ -56,7 +57,7 @@ public class ShipownerController {
         }
          ResponseEntity<?> responseEntity =  iShipownerInterface.createShipowner(shipownerForm);
         if (responseEntity.getStatusCode().is2xxSuccessful()){
-            return  ResponseEntity.status(200).body(responseEntity.getBody());
+            return  ResponseEntity.status(200).body("Se creo corramente un propietario.");
         }
         return  ResponseEntity.status(500).body("Problema interno en el servidor. Contacto con el administrador.");
     }
@@ -75,5 +76,21 @@ public class ShipownerController {
         }
 
         return  ResponseEntity.status(500).body("Problema interno en el servidor. Contacto con el administrador.");
+    }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteShipowner(@PathVariable int id){
+
+        if (id<0){
+            return ResponseEntity.status(404).body("Se tiene que introducir una id correcta.");
+        }
+
+        ResponseEntity<?> responseEntity = iShipownerInterface.deleteShipowner(id);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body("Se elimino correctamente el propietario.");
+        }
+
+        return  ResponseEntity.status(500).body("Error en el servidor. Contacto con el administrador del sistema.");
     }
 }
