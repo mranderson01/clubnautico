@@ -44,7 +44,6 @@ public class Boat {
     @JsonIgnore
     private Set<Shipowner> Shipowners = new HashSet<>();
 
-
     //BOAT - DEPARTURE
     @OneToMany(mappedBy = "boat",cascade = CascadeType.ALL)
     @JsonIgnore

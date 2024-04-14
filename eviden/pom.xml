@@ -53,11 +53,9 @@
 			<scope>test</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-test</artifactId>
-			<scope>test</scope>
-		</dependency>
+
+
+		//JWT
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -75,9 +73,17 @@
 			<version>0.11.5</version>
 			<scope>runtime</scope>
 		</dependency>
+		//SEGURIDAD
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.security</groupId>
 			<artifactId>spring-security-core</artifactId>
+			<version>6.2.3</version>
 		</dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>

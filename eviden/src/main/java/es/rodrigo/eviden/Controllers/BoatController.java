@@ -6,6 +6,8 @@ import es.rodrigo.eviden.Models.CreationBoatForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -107,5 +109,20 @@ public class BoatController {
         }
 
         return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
+    }
+
+    @GetMapping("/boatByUsername")
+    ResponseEntity<?> getBoatsByUsername(){
+
+        ResponseEntity<?> responseEntity = iBoatInterface.findBoatByUsername();
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return ResponseEntity.status(200).body(responseEntity);
+        }
+
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return ResponseEntity.status(404).body(responseEntity);
+        }
+
+        return ResponseEntity.status(500).body("hubo un error en el servidor. Contacta con el administrador.");
     }
 }

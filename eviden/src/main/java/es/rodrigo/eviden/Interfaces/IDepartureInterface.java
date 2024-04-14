@@ -13,4 +13,6 @@ public interface IDepartureInterface {
     ResponseEntity<?> createDeparture(DepartureForm departureForm);
     ResponseEntity<?> deleteDeparture(int id);
     ResponseEntity<?> updateDeparture(DepartureForm departureForm,int id);
+
+
 }

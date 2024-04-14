@@ -18,5 +18,7 @@ public interface IBoatInterface {
     ResponseEntity<?> deleteBoatByName(String Name);
     ResponseEntity<?> deleteById(int id);
 
+    ResponseEntity<?>  findBoatByUsername();
+
     ResponseEntity<?> updateBoat(int id,CreationBoatForm boatInserted,Boat boat);
 }

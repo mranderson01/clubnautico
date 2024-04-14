@@ -28,7 +28,6 @@ public class UserService implements UserDetailsService{
     private IUserRepository userRepo;
     @Autowired
     private RoleService roleSvc;
-
     @Autowired
     private IRoleRepository roleRepo;
 
@@ -64,8 +63,8 @@ public class UserService implements UserDetailsService{
         //Creating the Role if not exist
         String basicRole = "ROLE_USER";
         Optional<Role> userRole = roleRepo.findByNombre(basicRole);
-        if (!userRole.isPresent()) {
-            Role newRole = new Role((Integer)null, basicRole, new ArrayList<>());
+        if (userRole.isEmpty()) {
+            Role newRole = new Role((Integer) null, basicRole, new ArrayList<>());
             roleSvc.Create(newRole);
 
             //Created and Extracted (again)
@@ -81,22 +80,10 @@ public class UserService implements UserDetailsService{
     }
 
     public List<User> ReadAll(){
-        Iterable<User> iterUser = userRepo.findAll();
-
-        List<User> listUser = StreamSupport
-                .stream(iterUser.spliterator(), false)
-                .toList();
-
-        return listUser;
-    }
-
-    public User ReadSingle(String username){
-        return GetUser(username);
+        return userRepo.findAll();
     }
 
     public void Update(User userUpdate){
-        // User oldUser = GetUser(UserUpdate.getUser_id());
-
         userRepo.saveAndFlush(userUpdate);
     }
 

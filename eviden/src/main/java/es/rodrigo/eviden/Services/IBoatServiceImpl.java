@@ -10,6 +10,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -36,7 +38,13 @@ public class IBoatServiceImpl implements IBoatInterface {
 
     @Override
     public ResponseEntity<?> findById(int id) {
-        return null;
+
+        Optional<Boat> boat  = iBoatRepository.findById(id);
+
+        if (boat.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok(boat);
     }
 
     @Override
@@ -121,6 +129,21 @@ public class IBoatServiceImpl implements IBoatInterface {
     public ResponseEntity<?> deleteById(int id) {
         iBoatRepository.deleteById(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Override
+    public ResponseEntity<?> findBoatByUsername() {
+
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = ((UserDetails)principal);
+
+        List<Boat> listBoat = iShipownerRepository.findBoatByUsername(userDetails.getUsername());
+
+        if (listBoat.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(listBoat);
     }
 
     @Override

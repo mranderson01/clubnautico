@@ -63,4 +63,35 @@ public class DepartureController {
 
         return ResponseEntity.status(500).body("Hubo un problema en el servidor. Contacte con el administrador.");
     }
+
+    @DeleteMapping("/{id}")
+    ResponseEntity<?>deleteDeparture(@PathVariable int id){
+
+        if (id<=0){
+            return ResponseEntity.status(404).body("No se puede introducir una id por debajo o igual de 0");
+        }
+        ResponseEntity<?> responseEntity = iDepartureInterface.deleteDeparture(id);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return ResponseEntity.status(200).body(responseEntity.getBody());
+        }
+
+        return ResponseEntity.status(500).body("Error en el servidor. ");
+    }
+
+    @PostMapping("/create")
+    ResponseEntity<?> postDeparture(
+                                    @Valid @RequestBody DepartureForm departureForm,
+                                    BindingResult bindingResult){
+        ResponseEntity<?> responseEntity = iDepartureInterface.createDeparture(departureForm);
+
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return ResponseEntity.badRequest().body(responseEntity);
+        }
+
+
+
+        return ResponseEntity.ok().body(responseEntity);
+    }
+
 }

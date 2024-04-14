@@ -15,5 +15,5 @@ public class DepartureForm {
     private Date date;
     private  String time;
     private  String destination;
-
+    public int idBoat;
 }

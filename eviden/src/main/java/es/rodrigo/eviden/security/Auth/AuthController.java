@@ -1,32 +1,100 @@
-package es.rodrigo.seguridad.security.Auth;
+package es.rodrigo.eviden.security.Auth;
 
-import es.rodrigo.eviden.Models.Response.AuthService;
-import es.rodrigo.eviden.security.Auth.LoginRequest;
-import es.rodrigo.eviden.security.Auth.RegisterRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 
-@RestController
+import java.util.*;
+import java.util.stream.Collectors;
+
+@Controller
 @RequestMapping("/auth")
-@RequiredArgsConstructor
+@Transactional
 public class AuthController {
-
-    private final AuthService authService;
-
-    @PostMapping(value = "login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request)
-    {
-        return ResponseEntity.ok(authService.login(request));
+    @Autowired
+    IUser IUser;
+    @Autowired
+    IRole iRole;
+    private AuthenticationManager authenticationManager;
+    @GetMapping("/login")
+    public String login(){
+        return "/ViewAuth/login";
     }
 
-    @PostMapping(value = "register")
-    public ResponseEntity<?> register(@RequestBody RegisterRequest request)
-    {
+    @GetMapping("/registration")
+    public String registration(Model model){
+        model.addAttribute("modelregister", new Registration());
+        return "/ViewAuth/registration";
+    }
 
-        return ResponseEntity.ok(authService.register(request));
+    @PostMapping("/registration")
+    public String registration(@ModelAttribute("modelregister") Registration itemRegistro, BindingResult result,Model model){
+        if (result.hasErrors()){
+            return "/ViewAuth/registration";
+        }
+
+        User userBuscado= IUser.obtenerPorUsuario(itemRegistro.getEmail());
+        if (userBuscado!=null){
+            model.addAttribute("error","El usuario ya existe.");
+            return "/ViewAuth/registration";
+        }
+
+        Role roleEncontrado = iRole.obtenerRol("ROLE_USER");
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleEncontrado);
+
+        User usuarioNuevo = new User();
+        usuarioNuevo.setUsername(itemRegistro.getNombre());
+        usuarioNuevo.setEmail(itemRegistro.getEmail());
+        usuarioNuevo.setUsername(itemRegistro.getEmail());
+        usuarioNuevo.setPassword(new BCryptPasswordEncoder().encode(itemRegistro.getPassword()));
+
+        usuarioNuevo.setRoles(roles);
+        IUser.guardarUsuario(usuarioNuevo);
+        return "/ViewAuth/login";
+    }
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping ("/usuarios")
+    public String usuarios(Model model){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        model.addAttribute("username", authentication.getName());
+
+        List<User> usuariosFiltrado = IUser.obtenerUsuarios().stream()
+                .filter(usuario -> !usuario.getUsername().equals(username))
+                .collect(Collectors.toList());
+
+        model.addAttribute("usuarios",usuariosFiltrado);
+
+        return "/ViewAuth/usuarios";
+    }
+
+
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @GetMapping("/eliminar/{id}")
+    public String eliminar(Model model, @PathVariable int id){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        Optional<User> usuarioBuscado =IUser.encontrarPorId(id);
+        if (usuarioBuscado.isPresent() && username.equals(usuarioBuscado.get().getUsername())){
+            return "redirect:/auth/usuarios";
+        }
+
+        IUser.eliminarUserPorId(id);
+
+        return "redirect:/auth/usuarios";
     }
 }
