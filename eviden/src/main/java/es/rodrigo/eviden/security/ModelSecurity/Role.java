@@ -1,7 +1,4 @@
-package es.rodrigo.eviden.Models;
-
-import java.util.ArrayList;
-import java.util.List;
+package es.rodrigo.eviden.security.ModelSecurity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -9,22 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "Role",uniqueConstraints = {@UniqueConstraint(columnNames = {"Nombre"})})
+@Table(name = "role",uniqueConstraints = {@UniqueConstraint(columnNames = {"name"})})
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int role_id;
+    @Column(nullable = false,name = "id")
+    private int id;
 
-    @Column(nullable = false)
-    private String nombre;
+    @Column(nullable = false,name = "name")
+    private String name;
 
     //Relationships
-
     @ManyToMany(mappedBy = "roles")
     private List<User> users = new ArrayList<User>();
 }

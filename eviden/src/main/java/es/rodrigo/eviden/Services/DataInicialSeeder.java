@@ -2,23 +2,18 @@ package es.rodrigo.eviden.Services;
 
 import es.rodrigo.eviden.Models.Boat;
 import es.rodrigo.eviden.Models.Departure;
-import es.rodrigo.eviden.Models.Partner;
 import es.rodrigo.eviden.Models.Shipowner;
 import es.rodrigo.eviden.Repositories.IBoatRepository;
 import es.rodrigo.eviden.Repositories.IDepartureRepository;
-import es.rodrigo.eviden.Repositories.IPartnerRepository;
 import es.rodrigo.eviden.Repositories.IShipownerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.repository.util.ClassUtils.ifPresent;
 
 @Service
 public class DataInicialSeeder implements CommandLineRunner {
@@ -28,8 +23,6 @@ public class DataInicialSeeder implements CommandLineRunner {
     @Autowired
     private IDepartureRepository iDepartureRepository;
     @Autowired
-    private IPartnerRepository iPartnerRepository;
-    @Autowired
     private IShipownerRepository iShipownerRepository;
 
 
@@ -37,7 +30,7 @@ public class DataInicialSeeder implements CommandLineRunner {
     public void run(String... args) throws Exception {
 
         //Socios
-        Partner partner1 = iPartnerRepository.findByUsername("neo@clubnautico.com");
+        /*Partner partner1 = iPartnerRepository.findByUsername("neo@clubnautico.com");
         if (partner1==null){
             partner1 = new Partner();
             partner1.setUsername("neo@clubnautico.com");
@@ -65,7 +58,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             partner3.setSurname("unknow");
             partner3.setCountry("unknow");
             iPartnerRepository.save(partner3);
-        }
+        }*/
 
         //Botes
 
