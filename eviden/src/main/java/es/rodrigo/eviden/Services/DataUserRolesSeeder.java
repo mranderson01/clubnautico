@@ -111,7 +111,7 @@ public class DataUserRolesSeeder implements CommandLineRunner {
             ;
         }
 
-        Optional<User> usuario4=usuarioRepository.findByUsername("user@clubnautico.com");
+        Optional<User> usuario4 = usuarioRepository.findByUsername("user@clubnautico.com");
         if (usuario4.isEmpty()){
             User user = new User();
             user.setFirstname("user");

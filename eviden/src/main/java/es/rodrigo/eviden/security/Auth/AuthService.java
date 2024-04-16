@@ -39,17 +39,11 @@ public class AuthService {
         Optional<User> user =  iUserRepository.findByUsername(request.getUsername());
 
         if (user.isEmpty()){
-            return AuthResponse
-                    .builder()
-                    .token("Hubo un error en el usuario o contraseña")
-                    .build();
+            return new AuthResponse("Hubo un error en el usuario o contraseña", false);
         }
 
         String token = jwtService.getToken((UserDetails) user.get());
-        return AuthResponse
-                .builder()
-                .token(token)
-                .build();
+        return new AuthResponse(token, true);
     }
 
     public AuthResponse register(RegisterRequest request) {
