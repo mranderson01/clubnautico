@@ -4,9 +4,12 @@ import es.rodrigo.eviden.Interfaces.IShipownerInterface;
 import es.rodrigo.eviden.Models.Shipowner;
 import es.rodrigo.eviden.Models.ShipownerForm;
 import es.rodrigo.eviden.Repositories.IShipownerRepository;
-import org.apache.coyote.Response;
+import es.rodrigo.eviden.Repositories.IUserRepository;
+import es.rodrigo.eviden.security.ModelSecurity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +20,9 @@ public class IShipownerService implements IShipownerInterface {
 
     @Autowired
     IShipownerRepository iShipownerRepository;
+
+    @Autowired
+    IUserRepository iUserRepository;
 
     @Override
     public ResponseEntity<List<Shipowner>> getAll() {
@@ -34,20 +40,18 @@ public class IShipownerService implements IShipownerInterface {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(shipowner);
-    }
-
-    @Override
-    public ResponseEntity<Shipowner> getByUsername(String username) {
-        Shipowner shipowner =  iShipownerRepository.findByUsername(username);
-        if (shipowner==null){
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(shipowner);
-    }
+    } 
 
     @Override
     public ResponseEntity<Shipowner> getByDni(String Dni) {
+
+        UserDetails userDetails = obtenerUserDetails();
+        String username = userDetails.getUsername();
+
+        Optional<User> usuario = iUserRepository.findByUsername(username);
+
         Shipowner shipowner = iShipownerRepository.findByDni(Dni);
+
         if (shipowner!=null){
             return ResponseEntity.ok(shipowner);
         }
@@ -63,16 +67,21 @@ public class IShipownerService implements IShipownerInterface {
     @Override
     public ResponseEntity<Shipowner> createShipowner(ShipownerForm shipownerForm) {
 
-        Shipowner shipowner = new Shipowner();
-        shipowner.setUsername(shipownerForm.getUsername());
-        shipowner.setName(shipownerForm.getName());
-        shipowner.setSurname(shipownerForm.getName());
-        shipowner.setCountry(shipownerForm.getCountry());
-        shipowner.setDni(shipownerForm.getDni());
-        shipowner.setPhone(shipownerForm.getPhone());
+        Optional<User> user = iUserRepository.findById(shipownerForm.getIdUser());
+        if (user.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
+        Shipowner shipowner = new Shipowner();
+        shipowner.setCountry(shipownerForm.getCountry());
+        shipowner.setUser(user.get());
         iShipownerRepository.save(shipowner);
 
         return ResponseEntity.ok().build();
+    }
+
+    public UserDetails obtenerUserDetails(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails)principal);
     }
 }

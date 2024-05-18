@@ -9,7 +9,7 @@ import java.util.List;
 public interface IShipownerInterface {
     ResponseEntity<List<Shipowner>> getAll();
     ResponseEntity<Shipowner> getByGetReferenceId(int idReferenced);
-    ResponseEntity<Shipowner> getByUsername(String username);
+
     ResponseEntity<Shipowner> getByDni(String Dni);
     ResponseEntity<?> deleteShipowner(int id);
     ResponseEntity<?> createShipowner(ShipownerForm shipowner);

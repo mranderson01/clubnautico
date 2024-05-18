@@ -11,15 +11,15 @@ import lombok.Setter;
 public class CreationBoatForm {
 
     @NonNull
-    private String nameenrollment;
+    private String name;
 
     @NonNull
-    private String name;
+    private String nameenrollment;
 
     private int numberberth;
 
     private int fee;
 
-    @NonNull
-    private String[] usernames;
+    private int idShipowner;
+
 }

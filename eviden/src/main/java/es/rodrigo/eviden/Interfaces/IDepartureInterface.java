@@ -15,4 +15,5 @@ public interface IDepartureInterface {
     ResponseEntity<?> updateDeparture(DepartureForm departureForm,int id);
 
 
+    ResponseEntity<?> getDeparturesByUsername(String username);
 }

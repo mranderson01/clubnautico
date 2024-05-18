@@ -6,6 +6,8 @@ import es.rodrigo.eviden.Models.CreationBoatForm;
 import es.rodrigo.eviden.Models.Shipowner;
 import es.rodrigo.eviden.Repositories.IBoatRepository;
 import es.rodrigo.eviden.Repositories.IShipownerRepository;
+import es.rodrigo.eviden.Repositories.IUserRepository;
+import es.rodrigo.eviden.security.ModelSecurity.User;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,9 +28,23 @@ public class IBoatServiceImpl implements IBoatInterface {
     @Autowired
     IShipownerRepository iShipownerRepository;
 
+    @Autowired
+    IUserRepository iUserRepository;
+
     @Override
     public ResponseEntity<List<Boat>> getAll() {
-        List<Boat> listaBoat = iBoatRepository.findAll();
+        UserDetails userSeek = obtenerUserDetails();
+        String username = userSeek.getUsername();
+
+        Optional<User> user = iUserRepository.findByUsername(username);
+        if (user.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+
+        List<Boat> listaBoat = iBoatRepository.findAllBoatByDni(user.get().getDni());
+        //List<Boat> listaBoat = iBoatRepository.findAllBoatByDni(user.get().getDni());
+
         if (listaBoat.isEmpty()) {
             return ResponseEntity.notFound().build();
         } else {
@@ -90,30 +106,17 @@ public class IBoatServiceImpl implements IBoatInterface {
         boat.setNumberberth(creationBoatForm.getNumberberth());
         boat.setFee(creationBoatForm.getFee());
 
-        //buscar el objeto shipowner segun el username que es un correo para ver si existen en la base de datos:
+        //añado un usuario
+        int idShipowner = creationBoatForm.getIdShipowner();
+        Shipowner shipowner = iShipownerRepository.getReferenceById(idShipowner);
+        Optional<Shipowner> shipownerOpt = Optional.ofNullable(iShipownerRepository.findByDni(shipowner.getUser().getDni()));
 
-        //añado estos usuarios
-        Set<Shipowner> owners = new HashSet<>();
-
-        String [] userNames = creationBoatForm.getUsernames();
-        for (String userName : userNames) {
-            Optional<Shipowner> shipownerOpt = Optional.ofNullable(iShipownerRepository.findByUsername(userName));
-            if (shipownerOpt.isEmpty()){
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
-            }
-
-            //guardar en tabla intermedia
-            /*Shipownerboat shipownerboat = new Shipownerboat();
-            shipownerboat.setBoat_id(boat.getId());
-            shipownerboat.setShipowner_id(shipownerOpt.get().getId());*/
-
-            //añadir el propietario en la lista de propietarios
-            shipownerOpt.ifPresent(owners::add);
-        }
-        boat.setShipowners(owners);
+        HashSet<Shipowner> listShipowner = new HashSet<>();
+        listShipowner.add(shipowner);
+        boat.setShipowners(listShipowner);
 
         //guardar
-        iBoatRepository.saveAndFlush(boat);
+        iBoatRepository.save(boat);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 
@@ -132,12 +135,24 @@ public class IBoatServiceImpl implements IBoatInterface {
     }
 
     @Override
-    public ResponseEntity<?> findBoatByUsername() {
+    public ResponseEntity<?> findBoatsByUsername() {
 
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = ((UserDetails)principal);
 
-        List<Boat> listBoat = iShipownerRepository.findBoatByUsername(userDetails.getUsername());
+        Optional<Boat> listBoat = iBoatRepository.findBoatByIdAndUsername(userDetails.getUsername());
+
+        if (listBoat.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(listBoat);
+    }
+
+    @Override
+    public ResponseEntity<?> findBoatsByUsername(String username) {
+
+        Optional<Boat> listBoat = iBoatRepository.findBoatByIdAndUsername(username);
 
         if (listBoat.isEmpty()){
             return ResponseEntity.notFound().build();
@@ -156,17 +171,17 @@ public class IBoatServiceImpl implements IBoatInterface {
 
         //añadir los propietarios de ese barco.
         Set<Shipowner> listShipowner = new HashSet<>();
-        List<String> usernamesList = Arrays.asList(boatInserted.getUsernames());
+        int idShipowner = boatInserted.getIdShipowner();
+        Shipowner shipowner = iShipownerRepository.getReferenceById(idShipowner);
 
-        if (!usernamesList.isEmpty()){
-            usernamesList.forEach(username -> {
-                listShipowner.add(iShipownerRepository.findByUsername(username));
-            });
-        }
-
-        boat.setShipowners(listShipowner);
+        boat.getShipowners().add(shipowner);
 
         iBoatRepository.save(boat);
         return ResponseEntity.status(HttpStatus.OK).build();
+    }
+
+    public UserDetails obtenerUserDetails(){
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return ((UserDetails)principal);
     }
 }

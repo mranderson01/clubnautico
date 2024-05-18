@@ -60,7 +60,6 @@ public class AuthService {
                 .password(passwordEncoder.encode( request.getPassword()))
                 .firstname(request.getFirstname())
                 .lastname(request.lastname)
-                .country(request.getCountry())
                 .roles(roles)
                 .build();
 

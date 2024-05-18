@@ -85,5 +85,17 @@ public class IDepartureService implements IDepartureInterface {
         }
     }
 
+    @Override
+    public ResponseEntity<?> getDeparturesByUsername(String username) {
+
+        List<Departure> departures = iDepartureRepository.findDeparturesByUsername(username);
+
+        if (departures.isEmpty()){
+            return ResponseEntity.internalServerError().build();
+        }
+
+        return ResponseEntity.ok().body(departures);
+    }
+
 
 }

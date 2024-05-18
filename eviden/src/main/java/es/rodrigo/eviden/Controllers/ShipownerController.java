@@ -7,6 +7,7 @@ import jakarta.validation.Valid;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ public class ShipownerController {
 
     //obtener todos los propietarios
     @GetMapping("/")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> getall(){
          ResponseEntity<List<Shipowner>> responseEntity = iShipownerInterface.getAll();
 
@@ -35,6 +37,7 @@ public class ShipownerController {
     }
 
     @GetMapping("/{dni}")
+    @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
     ResponseEntity<?> getOne(@PathVariable String dni){
         ResponseEntity<Shipowner> responseEntity = iShipownerInterface.getByDni(dni);
 
@@ -50,6 +53,7 @@ public class ShipownerController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> create(@Valid @RequestBody ShipownerForm shipownerForm,
                              BindingResult bindingResult){
         if (bindingResult.hasErrors()){
@@ -63,6 +67,7 @@ public class ShipownerController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> updateShipowner(@Valid @RequestBody ShipownerForm shipownerForm,
                                       BindingResult bindingResult){
         if (bindingResult.hasErrors()){
@@ -79,6 +84,7 @@ public class ShipownerController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> deleteShipowner(@PathVariable int id){
 
         if (id<0){

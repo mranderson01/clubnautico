@@ -29,8 +29,8 @@ public class Boat {
     @NotNull
     @Column(name = "nameenrollment")
     private String nameenrollment;
-
     @NotNull
+
     @Column(name = "numberberth")
     private int numberberth;
 

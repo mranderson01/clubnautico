@@ -1,6 +1,7 @@
 package es.rodrigo.eviden.security.ModelSecurity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Null;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -18,7 +19,7 @@ import java.util.List;
 public class Role {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,name = "id")
+    @Column(name = "id")
     private int id;
 
     @Column(nullable = false,name = "name")
@@ -26,5 +27,5 @@ public class Role {
 
     //Relationships
     @ManyToMany(mappedBy = "roles")
-    private List<User> users = new ArrayList<User>();
+    private List<User> users = new ArrayList<>();
 }

@@ -35,4 +35,11 @@ public class Departure {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "boat_id")
     private Boat boat;
+
+    //DEPARTURE - Shipowner
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "shipowner_id")
+    private Shipowner shipowner;
+
+
 }

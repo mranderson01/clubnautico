@@ -6,6 +6,7 @@ import es.rodrigo.eviden.Models.CreationBoatForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.BindingResult;
@@ -20,6 +21,7 @@ public class BoatController {
     IBoatInterface iBoatInterface;
 
     @GetMapping("/")
+    @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
     ResponseEntity<List<Boat>> index() {
 
         ResponseEntity<List<Boat>> responseEntity = iBoatInterface.getAll();
@@ -40,6 +42,7 @@ public class BoatController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
     ResponseEntity<?> getOneboat(@PathVariable int id){
         ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(id);
 
@@ -53,6 +56,7 @@ public class BoatController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> create( @Valid @RequestBody CreationBoatForm creationBoatForm,
                               BindingResult bindingResult){
         if (bindingResult.hasErrors()){
@@ -72,9 +76,8 @@ public class BoatController {
         return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
     }
 
-
-
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> updateBoat(@PathVariable int id,
                                  @Valid @RequestBody  CreationBoatForm boat,
                                  BindingResult bindingResult){
@@ -96,6 +99,7 @@ public class BoatController {
     }
 
     @DeleteMapping("{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> deleteBoat(@PathVariable int id){
 
         ResponseEntity<?> responseEntity = iBoatInterface.deleteById(id);
@@ -111,10 +115,29 @@ public class BoatController {
         return  ResponseEntity.status(500).body("Hubo un error en el servidor. Contacte con el administrador");
     }
 
-    @GetMapping("/boatByUsername")
+    @GetMapping("/boatsByUsername")
+    @PreAuthorize("hasRole('OWNER')")
     ResponseEntity<?> getBoatsByUsername(){
 
-        ResponseEntity<?> responseEntity = iBoatInterface.findBoatByUsername();
+        ResponseEntity<?> responseEntity = iBoatInterface.findBoatsByUsername();
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return ResponseEntity.status(200).body(responseEntity);
+        }
+
+        if (responseEntity.getStatusCode().is4xxClientError()){
+            return ResponseEntity.status(404).body(responseEntity);
+        }
+
+        return ResponseEntity.status(500).body("hubo un error en el servidor. Contacta con el administrador.");
+    }
+
+
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/{username}")
+    ResponseEntity<?> boatsToAdminFromUser(@PathVariable String username){
+
+        ResponseEntity<?> responseEntity = iBoatInterface.findBoatsByUsername(username);
+
         if (responseEntity.getStatusCode().is2xxSuccessful()){
             return ResponseEntity.status(200).body(responseEntity);
         }

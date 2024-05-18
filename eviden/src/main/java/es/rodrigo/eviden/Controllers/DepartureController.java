@@ -8,6 +8,7 @@ import es.rodrigo.eviden.Models.ShipownerForm;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +22,7 @@ public class DepartureController {
     private IDepartureInterface iDepartureInterface;
 
     @GetMapping("/")
+    @PreAuthorize("hasRole('OWNER')")
     ResponseEntity<?> getAll(){
         ResponseEntity<?> responseEntity = iDepartureInterface.getAll();
 
@@ -31,7 +33,22 @@ public class DepartureController {
         return  ResponseEntity.status(500).body("Hubo un error interno del servidor, contacto con el administrador.");
     }
 
+    @GetMapping("/{username}")
+    @PreAuthorize("hasRole('OWNER')")
+    ResponseEntity<?> getAll(@PathVariable String username){
+        ResponseEntity<?> responseEntity = iDepartureInterface.getDeparturesByUsername(username);
+
+        if (responseEntity.getStatusCode().is2xxSuccessful()){
+            return  ResponseEntity.status(200).body(responseEntity.getBody());
+        }
+
+        return  ResponseEntity.status(500).body("Hubo un error interno del servidor, contacto con el administrador.");
+    }
+
+
+
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
     ResponseEntity<?> getOne(@PathVariable int id){
         ResponseEntity<?> responseEntity = iDepartureInterface.getById(id);
 
@@ -43,6 +60,7 @@ public class DepartureController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?> updateDeparture(@PathVariable int id,
                                       @Valid @RequestBody DepartureForm departureForm,
                                       BindingResult bindingResult){
@@ -65,6 +83,7 @@ public class DepartureController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     ResponseEntity<?>deleteDeparture(@PathVariable int id){
 
         if (id<=0){
@@ -80,16 +99,14 @@ public class DepartureController {
     }
 
     @PostMapping("/create")
-    ResponseEntity<?> postDeparture(
-                                    @Valid @RequestBody DepartureForm departureForm,
+    @PreAuthorize("hasRole('ADMIN')")
+    ResponseEntity<?> postDeparture(@Valid @RequestBody DepartureForm departureForm,
                                     BindingResult bindingResult){
         ResponseEntity<?> responseEntity = iDepartureInterface.createDeparture(departureForm);
 
         if (responseEntity.getStatusCode().is4xxClientError()){
             return ResponseEntity.badRequest().body(responseEntity);
         }
-
-
 
         return ResponseEntity.ok().body(responseEntity);
     }

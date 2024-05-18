@@ -3,11 +3,13 @@ package es.rodrigo.eviden.Services;
 import es.rodrigo.eviden.Models.Boat;
 import es.rodrigo.eviden.Models.Departure;
 import es.rodrigo.eviden.Models.Shipowner;
-import es.rodrigo.eviden.Repositories.IBoatRepository;
-import es.rodrigo.eviden.Repositories.IDepartureRepository;
-import es.rodrigo.eviden.Repositories.IShipownerRepository;
+import es.rodrigo.eviden.Repositories.*;
+import es.rodrigo.eviden.security.ModelSecurity.Role;
+import es.rodrigo.eviden.security.ModelSecurity.User;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class DataInicialSeeder implements CommandLineRunner {
 
     @Autowired
@@ -24,44 +27,129 @@ public class DataInicialSeeder implements CommandLineRunner {
     private IDepartureRepository iDepartureRepository;
     @Autowired
     private IShipownerRepository iShipownerRepository;
+    @Autowired
+    private IUserRepository usuarioRepository;
+    @Autowired
+    private IRoleRepository rolRepository;
 
 
     @Override
     public void run(String... args) throws Exception {
 
-        //Socios
-        /*Partner partner1 = iPartnerRepository.findByUsername("neo@clubnautico.com");
-        if (partner1==null){
-            partner1 = new Partner();
-            partner1.setUsername("neo@clubnautico.com");
-            partner1.setName("Thomas");
-            partner1.setSurname("Anderson");
-            partner1.setCountry("EEUU");
-            iPartnerRepository.save(partner1);
+        //ROLES
+        List<Role> roles = new ArrayList<>();
+
+        Optional<Role> rolAdmin = rolRepository.findRoleByName("ROLE_ADMIN");
+        rolAdmin.ifPresent(roles::add);
+
+        if (rolAdmin.isEmpty()) {
+            Role rolAdmin1 = new Role();
+            rolAdmin1.setName("ROLE_ADMIN");
+
+            roles.add(rolAdmin1);
+            rolRepository.save(rolAdmin1);
         }
 
-        Partner partner2 = iPartnerRepository.findByUsername("morfeo@clubnautico.com");
-        if (partner2==null){
-            partner2 = new Partner();
-            partner2.setUsername("morfeo@clubnautico.com");
-            partner2.setName("unknow");
-            partner2.setSurname("unknow");
-            partner2.setCountry("unknow");
-            iPartnerRepository.save(partner2);
+        Optional<Role> roleOwner = rolRepository.findRoleByName("ROLE_OWNER");
+        roleOwner.ifPresent(roles::add);
+        if (roleOwner.isEmpty()) {
+            Role rolManager1 = new Role();
+            rolManager1.setName("ROLE_OWNER");
+            roles.add(rolManager1);
+            rolRepository.save(rolManager1);
         }
 
-        Partner partner3 = iPartnerRepository.findByUsername("trinity@clubnautico.com");
-        if (partner3==null){
-            partner3 = new Partner();
-            partner3.setUsername("trinity@clubnautico.com");
-            partner3.setName("unknow");
-            partner3.setSurname("unknow");
-            partner3.setCountry("unknow");
-            iPartnerRepository.save(partner3);
-        }*/
+        Optional<Role> rolUser = rolRepository.findRoleByName("ROLE_USER");
+        rolUser.ifPresent(roles::add);
+
+        if (rolUser.isEmpty()) {
+            Role rolUser1 = new Role();
+            rolUser1.setName("ROLE_USER");
+            roles.add(rolUser1);
+            rolRepository.save(rolUser1);
+        }
+
+        Optional<Role> rolWorker = rolRepository.findRoleByName("ROLE_WORKER");
+        rolWorker.ifPresent(roles::add);
+
+        if (rolWorker.isEmpty()) {
+            Role rolUser1 = new Role();
+            rolUser1.setName("ROLE_WORKER");
+            roles.add(rolUser1);
+            rolRepository.save(rolUser1);
+        }
+
+        //USUARIOS
+
+        List<User> users = new ArrayList<>();
+
+        Optional<User> usuario1 = usuarioRepository.findByUsername("admin@clubnautico.com");
+        usuario1.ifPresent(users::add);
+        if (usuario1.isEmpty()){
+            User admin = new User();
+            admin.setFirstname("admin");
+            admin.setLastname("admin");
+            admin.setUsername("admin@clubnautico.com");
+            admin.setPassword( new BCryptPasswordEncoder().encode("Asdf1234!"));
+            admin.setPhone("123456789");
+            admin.setDni("12345678E");
+
+            users.add(admin);
+            admin.getRoles().add(roles.getFirst());
+            usuarioRepository.save(admin);
+        }
+
+        Optional<User> usuario2=usuarioRepository.findByUsername("owner@clubnautico.com");
+        usuario2.ifPresent(users::add);
+        if (usuario2.isEmpty()){
+            User user = new User();
+            user.setFirstname("owner");
+            user.setLastname("owner");
+            user.setUsername("owner@clubnautico.com");
+            user.setPhone("123456789");
+            user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
+            user.setDni("12345678Z");
+
+
+            users.add(user);
+            user.getRoles().add(roles.get(1));
+            usuarioRepository.save(user);
+        }
+
+        Optional<User> usuario3 = usuarioRepository.findByUsername("worker@clubnautico.com");
+        usuario3.ifPresent(users::add);
+        if (usuario3.isEmpty()){
+            User user = new User();
+            user.setFirstname("worker");
+            user.setLastname("worker");
+            user.setUsername("worker@clubnautico.com");
+            user.setDni("12345678Y");
+            user.setPhone("123456789");
+            user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
+
+
+            users.add(user);
+            user.getRoles().add(roles.get(2));
+            usuarioRepository.save(user);
+        }
+
+        Optional<User> usuario4 = usuarioRepository.findByUsername("user@clubnautico.com");
+        usuario4.ifPresent(users::add);
+        if (usuario4.isEmpty()){
+            User user = new User();
+            user.setFirstname("user");
+            user.setLastname("user");
+            user.setUsername("user@clubnautico.com");
+            user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
+            user.setDni("12345678X");
+            user.setPhone("123456789");
+
+            users.add(user);
+            user.getRoles().add(roles.get(3));
+            usuarioRepository.save(user);
+        }
 
         //Botes
-
         List<Boat> listBoat = new ArrayList<>();
         Optional<Boat> boat1 = iBoatRepository.findByNumberberth(1);
         if(boat1.isEmpty()){
@@ -70,6 +158,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             boat.setName("Titanic");
             boat.setNumberberth(1);
             boat.setFee(1500);
+
             listBoat.add(boat);
             iBoatRepository.save(boat);
         };
@@ -81,6 +170,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             boat.setName("Neptune");
             boat.setNumberberth(2);
             boat.setFee(1500);
+
             listBoat.add(boat);
             iBoatRepository.save(boat);
         };
@@ -92,49 +182,40 @@ public class DataInicialSeeder implements CommandLineRunner {
             boat.setName("Mars");
             boat.setNumberberth(3);
             boat.setFee(1500);
+
             listBoat.add(boat);
             iBoatRepository.save(boat);
         };
 
         //Propietarios
-
-        Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner1@clubnautico.com"));
+        Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByDni("12345678X"));
         if (shipowner1.isEmpty()){
             Shipowner shipowner = new Shipowner();
-            shipowner.setUsername("shipowner1@clubnautico.com");
-            shipowner.setName("shipowner1Name");
-            shipowner.setSurname("shipowner1Surname");
-            shipowner.setCountry("shipowner1Country");
-            shipowner.setDni("12345678X");
-            shipowner.setPhone("123456789");
-            shipowner.getBoats().add(listBoat.get(0));
-            iShipownerRepository.save(shipowner);
+            shipowner.setCountry("spain");
 
+            shipowner.getBoats().add(listBoat.getFirst());
+
+            shipowner.setUser(users.getFirst());
+            iShipownerRepository.save(shipowner);
         }
 
-        Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner2@clubnautico.com"));
+        Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByDni("12345678Y"));
         if (shipowner2.isEmpty()){
             Shipowner shipowner = new Shipowner();
-            shipowner.setUsername("shipowner2@clubnautico.com");
-            shipowner.setName("shipowner2Name");
-            shipowner.setSurname("shipowner2Surname");
-            shipowner.setCountry("shipowner2Country");
-            shipowner.setDni("12345678Y");
-            shipowner.setPhone("123456789");
+            shipowner.setCountry("spain");
             shipowner.getBoats().add(listBoat.get(1));
+
+            shipowner.setUser(users.get(1));
             iShipownerRepository.save(shipowner);
         }
 
-        Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByUsername("shipowner3@clubnautico.com"));
+        Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByDni("12345678Z"));
         if (shipowner3.isEmpty()){
             Shipowner shipowner = new Shipowner();
-            shipowner.setUsername("shipowner3@clubnautico.com");
-            shipowner.setName("shipowner3Name");
-            shipowner.setSurname("shipowner3Surname");
-            shipowner.setCountry("shipowner3Country");
-            shipowner.setDni("12345678Z");
-            shipowner.setPhone("123456789");
+            shipowner.setCountry("spain");
             shipowner.getBoats().add(listBoat.get(2));
+
+            shipowner.setUser(users.get(2));
             iShipownerRepository.save(shipowner);
         }
 
@@ -149,6 +230,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             newDeparture.setTime("31/01/2024");
             newDeparture.setDestination("menorca");
             newDeparture.setBoat(finalBoat);
+
             iDepartureRepository.save(newDeparture);
         }
 
@@ -168,12 +250,14 @@ public class DataInicialSeeder implements CommandLineRunner {
         Optional<Departure> departure3 = iDepartureRepository.findById(3);
 
         if (departure3.isEmpty()){
+
             Boat finalBoat3 = listBoat.get(2);
             Departure newDeparture = new Departure();
             newDeparture.setDate(new Date());
             newDeparture.setTime("31/01/2024");
             newDeparture.setDestination("Ibiza");
             newDeparture.setBoat(finalBoat3);
+
             iDepartureRepository.save(newDeparture);
         }
 
