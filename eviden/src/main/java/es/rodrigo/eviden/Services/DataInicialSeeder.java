@@ -92,7 +92,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             admin.setUsername("admin@clubnautico.com");
             admin.setPassword( new BCryptPasswordEncoder().encode("Asdf1234!"));
             admin.setPhone("123456789");
-            admin.setDni("12345678E");
+            admin.setDni("12345678A");
 
             users.add(admin);
             admin.getRoles().add(roles.getFirst());
@@ -108,7 +108,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             user.setUsername("owner@clubnautico.com");
             user.setPhone("123456789");
             user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
-            user.setDni("12345678Z");
+            user.setDni("12345678B");
 
 
             users.add(user);
@@ -123,7 +123,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             user.setFirstname("worker");
             user.setLastname("worker");
             user.setUsername("worker@clubnautico.com");
-            user.setDni("12345678Y");
+            user.setDni("12345678C");
             user.setPhone("123456789");
             user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
 
@@ -141,7 +141,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             user.setLastname("user");
             user.setUsername("user@clubnautico.com");
             user.setPassword(new BCryptPasswordEncoder().encode("Asdf1234!"));
-            user.setDni("12345678X");
+            user.setDni("12345678D");
             user.setPhone("123456789");
 
             users.add(user);
@@ -188,18 +188,18 @@ public class DataInicialSeeder implements CommandLineRunner {
         };
 
         //Propietarios
-        Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByDni("12345678X"));
+        Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByDni("12345678A"));
         if (shipowner1.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
 
             shipowner.getBoats().add(listBoat.getFirst());
 
-            shipowner.setUser(users.getFirst());
+            shipowner.setUser(users.get(0));
             iShipownerRepository.save(shipowner);
         }
 
-        Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByDni("12345678Y"));
+        Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByDni("12345678B"));
         if (shipowner2.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
@@ -209,7 +209,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             iShipownerRepository.save(shipowner);
         }
 
-        Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByDni("12345678Z"));
+        Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByDni("12345678C"));
         if (shipowner3.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
