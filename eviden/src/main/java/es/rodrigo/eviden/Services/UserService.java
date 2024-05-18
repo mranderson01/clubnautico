@@ -29,6 +29,7 @@ public class UserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
         Optional<User> usuario = iUserRepository.findByUsername(username);
 
         if (usuario.isEmpty()) {
@@ -44,5 +45,5 @@ public class UserService implements UserDetailsService {
                 usuario.get().getPassword(),
                 authorities
         );
-    }
+    }  
 }

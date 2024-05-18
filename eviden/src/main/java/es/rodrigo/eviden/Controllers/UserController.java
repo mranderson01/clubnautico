@@ -1,6 +1,13 @@
 package es.rodrigo.eviden.Controllers;
 
+import es.rodrigo.eviden.Interfaces.IUser;
+import es.rodrigo.eviden.Repositories.IUserRepository;
+import es.rodrigo.eviden.Services.UserServiceImpl;
 import es.rodrigo.eviden.security.ModelSecurity.User;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,13 +16,17 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/user")
 public class UserController {
 
+    @Autowired
+    private UserServiceImpl iUser;
 
-
-    @GetMapping("/")
+    @GetMapping("/") 
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<String> index(){
-        System.out.println("hola");
-        return ResponseEntity.status(200).body("Recurso encontrado: "); // Estado 200 OK
+    public ResponseEntity<?> index(){
+        ResponseEntity<?> responseEntity = iUser.obtenerUsuarios();
+        if (responseEntity.getStatusCode().is4xxClientError()) {
+            return ResponseEntity.status(404).body(responseEntity.getBody());
+        }
+        return ResponseEntity.status(200).body(responseEntity.getBody());
     }
 
     @GetMapping("/{id}")

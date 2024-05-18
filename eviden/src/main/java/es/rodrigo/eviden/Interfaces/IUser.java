@@ -5,12 +5,14 @@ import es.rodrigo.eviden.security.ModelSecurity.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface IUser {
-      User obtenerPorUsuario(String usuario);
-      void guardarUsuario(User usuario);
-      List<User> obtenerUsuarios();
+import org.springframework.http.ResponseEntity;
 
-      Optional<User> encontrarPorId(int id);
-      void eliminarUserPorId(int id);
-    void eliminarUsuario(User usuarioBorrar);
+public interface IUser {
+      ResponseEntity<?> obtenerPorUsuario(String usuario);
+      ResponseEntity<?> guardarUsuario(User usuario);
+      ResponseEntity<?> obtenerUsuarios();
+
+      ResponseEntity<?> encontrarPorId(int id);
+      ResponseEntity<?> eliminarUserPorId(int id);
+      ResponseEntity<?> eliminarUsuario(User usuarioBorrar);
 }

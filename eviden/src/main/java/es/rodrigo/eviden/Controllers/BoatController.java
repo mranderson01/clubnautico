@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/boats")
 public class BoatController {
+
     @Autowired
     IBoatInterface iBoatInterface;
 
@@ -42,7 +43,7 @@ public class BoatController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('WORKER') || hasRole('OWNER')")
     ResponseEntity<?> getOneboat(@PathVariable int id){
         ResponseEntity<?> responseEntity = iBoatInterface.findbyNumberberth(id);
 
@@ -56,7 +57,7 @@ public class BoatController {
     }
 
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('WORKER') || hasRole('OWNER')")
     ResponseEntity<?> create( @Valid @RequestBody CreationBoatForm creationBoatForm,
                               BindingResult bindingResult){
         if (bindingResult.hasErrors()){
@@ -77,7 +78,7 @@ public class BoatController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('WORKER') || hasRole('OWNER')")
     ResponseEntity<?> updateBoat(@PathVariable int id,
                                  @Valid @RequestBody  CreationBoatForm boat,
                                  BindingResult bindingResult){
@@ -99,7 +100,7 @@ public class BoatController {
     }
 
     @DeleteMapping("{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('WORKER') || hasRole('OWNER')")
     ResponseEntity<?> deleteBoat(@PathVariable int id){
 
         ResponseEntity<?> responseEntity = iBoatInterface.deleteById(id);
@@ -116,7 +117,7 @@ public class BoatController {
     }
 
     @GetMapping("/boatsByUsername")
-    @PreAuthorize("hasRole('OWNER')")
+    @PreAuthorize("hasRole('ADMIN') || hasRole('WORKER')")
     ResponseEntity<?> getBoatsByUsername(){
 
         ResponseEntity<?> responseEntity = iBoatInterface.findBoatsByUsername();
