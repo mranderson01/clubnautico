@@ -41,5 +41,6 @@ public class Shipowner {
 
     //Departure - SHIPOWNER
     @OneToMany(cascade = CascadeType.ALL,mappedBy = "shipowner")
+    @JsonIgnore
     private List<Departure> departures;
 }

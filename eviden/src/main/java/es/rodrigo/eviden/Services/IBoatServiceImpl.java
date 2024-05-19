@@ -42,8 +42,7 @@ public class IBoatServiceImpl implements IBoatInterface {
         }
 
 
-        List<Boat> listaBoat = iBoatRepository.findAllBoatByDni(user.get().getDni());
-        //List<Boat> listaBoat = iBoatRepository.findAllBoatByDni(user.get().getDni());
+        List<Boat> listaBoat = iBoatRepository.findAllBoatByDni(user.get().getDni()); 
 
         if (listaBoat.isEmpty()) {
             return ResponseEntity.notFound().build();

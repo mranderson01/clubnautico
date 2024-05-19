@@ -152,6 +152,7 @@ public class DataInicialSeeder implements CommandLineRunner {
         //Botes
         List<Boat> listBoat = new ArrayList<>();
         Optional<Boat> boat1 = iBoatRepository.findByNumberberth(1);
+        boat1.ifPresent(listBoat::add);
         if(boat1.isEmpty()){
             Boat boat = new Boat();
             boat.setNameenrollment("Titanic");
@@ -164,6 +165,7 @@ public class DataInicialSeeder implements CommandLineRunner {
         };
 
         Optional<Boat> boat2 = iBoatRepository.findByNumberberth(2);
+        boat2.ifPresent(listBoat::add);
         if(boat2.isEmpty()){
             Boat boat = new Boat();
             boat.setNameenrollment("Neptune");
@@ -176,6 +178,7 @@ public class DataInicialSeeder implements CommandLineRunner {
         };
 
         Optional<Boat> boat3 = iBoatRepository.findByNumberberth(3);
+        boat3.ifPresent(listBoat::add);
         if(boat3.isEmpty()){
             Boat boat = new Boat();
             boat.setNameenrollment("Mars");
@@ -188,34 +191,44 @@ public class DataInicialSeeder implements CommandLineRunner {
         };
 
         //Propietarios
+
+        List<Shipowner> listPropietarios =  new ArrayList<>();
         Optional<Shipowner> shipowner1 = Optional.ofNullable(iShipownerRepository.findByDni("12345678A"));
+        shipowner1.ifPresent(listPropietarios::add);
         if (shipowner1.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
 
             shipowner.getBoats().add(listBoat.getFirst());
 
-            shipowner.setUser(users.get(0));
+            shipowner.setUser(users.get(0));            
+            listPropietarios.add(shipowner);
             iShipownerRepository.save(shipowner);
         }
 
         Optional<Shipowner> shipowner2 = Optional.ofNullable(iShipownerRepository.findByDni("12345678B"));
+        shipowner1.ifPresent(listPropietarios::add);
+
         if (shipowner2.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
             shipowner.getBoats().add(listBoat.get(1));
 
             shipowner.setUser(users.get(1));
+            listPropietarios.add(shipowner);
             iShipownerRepository.save(shipowner);
         }
 
         Optional<Shipowner> shipowner3 = Optional.ofNullable(iShipownerRepository.findByDni("12345678C"));
+        shipowner1.ifPresent(listPropietarios::add);
+
         if (shipowner3.isEmpty()){
             Shipowner shipowner = new Shipowner();
             shipowner.setCountry("spain");
             shipowner.getBoats().add(listBoat.get(2));
 
             shipowner.setUser(users.get(2));
+            listPropietarios.add(shipowner);
             iShipownerRepository.save(shipowner);
         }
 
@@ -230,7 +243,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             newDeparture.setTime("31/01/2024");
             newDeparture.setDestination("menorca");
             newDeparture.setBoat(finalBoat);
-
+            newDeparture.setShipowner(listPropietarios.get(0));
             iDepartureRepository.save(newDeparture);
         }
 
@@ -243,6 +256,7 @@ public class DataInicialSeeder implements CommandLineRunner {
             newDeparture.setTime("31/01/2024");
             newDeparture.setDestination("Mallorca");
             newDeparture.setBoat(finalBoat2);
+            newDeparture.setShipowner(listPropietarios.get(0));
             iDepartureRepository.save(newDeparture);
         }
 
@@ -256,6 +270,91 @@ public class DataInicialSeeder implements CommandLineRunner {
             newDeparture.setDate(new Date());
             newDeparture.setTime("31/01/2024");
             newDeparture.setDestination("Ibiza");
+            newDeparture.setShipowner(listPropietarios.get(0));
+            newDeparture.setBoat(finalBoat3);
+
+            iDepartureRepository.save(newDeparture);
+        }
+
+        Optional<Departure> departure4 = iDepartureRepository.findById(4);
+
+        if (departure4.isEmpty()){
+            Boat finalBoat = listBoat.get(0);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("Tenerife");
+            newDeparture.setBoat(finalBoat);
+            newDeparture.setShipowner(listPropietarios.get(1));
+            iDepartureRepository.save(newDeparture);
+        }
+
+        Optional<Departure> departure5 = iDepartureRepository.findById(5);
+
+        if (departure5.isEmpty()){
+            Boat finalBoat2 = listBoat.get(1);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("Gran canaria");
+            newDeparture.setBoat(finalBoat2);
+            newDeparture.setShipowner(listPropietarios.get(1));
+            iDepartureRepository.save(newDeparture);
+        }
+
+
+        Optional<Departure> departure6 = iDepartureRepository.findById(6);
+
+        if (departure6.isEmpty()){
+
+            Boat finalBoat3 = listBoat.get(2);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("Lanzarote");
+            newDeparture.setShipowner(listPropietarios.get(1));
+            newDeparture.setBoat(finalBoat3);
+
+            iDepartureRepository.save(newDeparture);
+        }
+
+        Optional<Departure> departure7 = iDepartureRepository.findById(7);
+
+        if (departure7.isEmpty()){
+            Boat finalBoat = listBoat.get(0);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("hierro");
+            newDeparture.setBoat(finalBoat);
+            newDeparture.setShipowner(listPropietarios.get(2));
+            iDepartureRepository.save(newDeparture);
+        }
+
+        Optional<Departure> departure8 = iDepartureRepository.findById(8);
+
+        if (departure8.isEmpty()){
+            Boat finalBoat2 = listBoat.get(1);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("Fuerteventura");
+            newDeparture.setBoat(finalBoat2);
+            newDeparture.setShipowner(listPropietarios.get(2));
+            iDepartureRepository.save(newDeparture);
+        }
+
+
+        Optional<Departure> departure9 = iDepartureRepository.findById(9);
+
+        if (departure9.isEmpty()){
+
+            Boat finalBoat3 = listBoat.get(2);
+            Departure newDeparture = new Departure();
+            newDeparture.setDate(new Date());
+            newDeparture.setTime("31/01/2024");
+            newDeparture.setDestination("La Gomera");
+            newDeparture.setShipowner(listPropietarios.get(2));
             newDeparture.setBoat(finalBoat3);
 
             iDepartureRepository.save(newDeparture);

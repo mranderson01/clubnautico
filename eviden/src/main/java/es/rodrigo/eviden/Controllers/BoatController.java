@@ -3,6 +3,7 @@ package es.rodrigo.eviden.Controllers;
 import es.rodrigo.eviden.Interfaces.IBoatInterface;
 import es.rodrigo.eviden.Models.Boat;
 import es.rodrigo.eviden.Models.CreationBoatForm;
+import es.rodrigo.eviden.Services.IBoatServiceImpl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +20,7 @@ import java.util.List;
 public class BoatController {
 
     @Autowired
-    IBoatInterface iBoatInterface;
+    IBoatServiceImpl iBoatInterface;
 
     @GetMapping("/")
     @PreAuthorize("hasRole('OWNER') || hasRole('ADMIN')")
